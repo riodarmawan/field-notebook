@@ -8,6 +8,7 @@ import {
   DM_Sans,
   JetBrains_Mono,
 } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Nav from "@/components/Nav"; // "@/" artinya "dari folder root proyek"
 import Footer from "@/components/Footer";
@@ -77,6 +78,12 @@ export default function RootLayout({
           <main>{children}</main>
           <Footer />
         </div>
+        {/* Statistik pengunjung Cloudflare: tanpa cookie, tanpa menyimpan IP */}
+        <Script
+          src="https://static.cloudflareinsights.com/beacon.min.js"
+          data-cf-beacon='{"token": "1bde69f39ccb4e228bd38d02e4498677"}'
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );
