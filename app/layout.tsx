@@ -55,13 +55,28 @@ export default function RootLayout({
     // Keempat variable font ditempel ke <html> supaya bisa dipakai di mana saja.
     <html
       lang="id"
+      data-theme="light"
+      suppressHydrationWarning // atribut data-theme diubah skrip sebelum React jalan
       className={`${instrument.variable} ${newsreader.variable} ${dmSans.variable} ${jetbrains.variable}`}
     >
+      <head>
+        {/* Pasang tema tersimpan (atau preferensi sistem) sebelum halaman tergambar, supaya tidak berkedip terang */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              '(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.setAttribute("data-theme",t)}catch(e){}})()',
+          }}
+        />
+      </head>
       {/* bg-cream = background warna cream, text-ink = warna teks ink (lihat globals.css) */}
       <body className="bg-cream font-sans text-ink antialiased">
-        <Nav />
-        <main>{children}</main>
-        <Footer />
+        {/* Bungkus semua dengan padding yang sama. Kiri lebih lebar (pl-36)
+            untuk memberi ruang pada garis margin merah di globals.css */}
+        <div className="px-6 md:pr-24 md:pl-36">
+          <Nav />
+          <main>{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

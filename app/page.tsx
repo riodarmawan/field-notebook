@@ -1,53 +1,41 @@
 // page.tsx di folder app/ = halaman untuk URL "/".
-// (app/tracker/page.tsx = URL "/tracker". Nama folder = URL.)
-// Isinya cuma satu fungsi yang me-return HTML. Belum ada logika.
+// Halaman ini hanya menyusun bagian-bagiannya. Bagian yang butuh data/klik
+// dipisah ke komponen sendiri (HomeStats, Catalog).
 //
 // Cara baca className (Tailwind): satu kata = satu aturan CSS.
-//   px-6 = padding kiri-kanan, mt-10 = margin atas, text-6xl = ukuran font besar.
-//   "md:px-24" = pakai px-24 hanya di layar lebar (md ke atas).
+//   mt-10 = margin atas, text-6xl = ukuran font besar.
+//   "md:col-span-8" = pakai col-span-8 hanya di layar lebar (md ke atas).
+
+import Catalog from "@/components/Catalog";
+import HomeHighlights from "@/components/HomeHighlights";
+import HomeStats from "@/components/HomeStats";
+import QuoteCard from "@/components/QuoteCard";
 
 export default function Home() {
   return (
-    <div className="px-6 md:px-24">
-      {/* Bagian atas: judul besar */}
-      <section className="pt-16 md:pt-28">
-        <p className="font-mono text-[13px] tracking-[0.12em] text-terracotta">
-          [YOUR NAME] — [YOUR FIELD]
-        </p>
-        <h1 className="mt-7 max-w-5xl font-display text-6xl leading-[0.92] tracking-tight md:text-[132px]">
-          Things I made,
-          <br />
-          <span className="italic text-terracotta">and how I learned</span> to
-          make them.
-        </h1>
-        <p className="mt-10 max-w-md font-serif text-lg leading-relaxed text-ink-soft">
-          Katalog karya yang sudah selesai, berdampingan dengan log harian apa
-          yang saya pelajari setiap hari.
+    <>
+      <section className="grid grid-cols-1 gap-x-6 pt-16 md:grid-cols-12 md:pt-28">
+        <div className="fade-up md:col-span-8">
+          <p className="mb-7 font-mono text-[13px] tracking-[0.12em] text-terracotta">
+            RIO DARMAWAN — SOFTWARE ENGINEER
+          </p>
+          <h1 className="font-display text-6xl leading-[0.92] tracking-[-0.03em] text-balance md:text-[132px]">
+            Things I made,
+            <br />
+            <span className="italic text-terracotta">and how I learned</span> to
+            make them.
+          </h1>
+        </div>
+        <p className="fade-up delay-2 mt-10 max-w-md font-serif text-lg leading-relaxed text-ink-soft text-pretty md:col-span-3 md:col-start-10 md:mt-0 md:pt-40">
+          A catalog of finished work, beside a daily log of what I studied each
+          day — so you can see the projects and the practice behind them.
         </p>
       </section>
 
-      {/* Bagian statistik: 3 kotak. Angkanya masih placeholder, nanti diganti data asli. */}
-      {/* grid-cols-2 = 2 kolom di HP, md:grid-cols-3 = 3 kolom di layar lebar */}
-      <section className="mt-24 grid grid-cols-2 gap-6 border-t-2 border-ink py-8 md:grid-cols-3">
-        <div>
-          <p className="font-mono text-xs tracking-widest text-muted">
-            PAGES WRITTEN
-          </p>
-          <p className="font-display text-6xl">[000]</p>
-        </div>
-        <div>
-          <p className="font-mono text-xs tracking-widest text-muted">
-            CURRENT STREAK
-          </p>
-          <p className="font-display text-6xl">[00]</p>
-        </div>
-        <div>
-          <p className="font-mono text-xs tracking-widest text-muted">
-            HOURS STUDIED
-          </p>
-          <p className="font-display text-6xl">[000]</p>
-        </div>
-      </section>
-    </div>
+      <QuoteCard />
+      <HomeStats />
+      <HomeHighlights />
+      <Catalog />
+    </>
   );
 }

@@ -1,21 +1,216 @@
 /* Mengaktifkan Tailwind */
 @import "tailwindcss";
 
-/* Di sini kita menamai warna dan font sendiri.
+/* ---------- Warna ----------
+   Nilai warna sebenarnya ada di variabel --c-* di bawah: satu set untuk tema terang (bawaan)
+   dan satu set untuk tema gelap. Atribut data-theme di <html> yang memilih (diatur oleh
+   skrip kecil di layout.tsx dan tombol di Nav). Komponen cukup memakai nama token
+   (text-ink, bg-paper, ...) dan otomatis ikut berganti. */
+:root {
+  color-scheme: light;
+  --c-cream: #f3ebdb; /* latar halaman */
+  --c-paper: #f9f3e6; /* kartu */
+  --c-field: #fffaf0; /* isian form */
+  --c-ink: #2a221a; /* teks, garis, tombol utama */
+  --c-ink-soft: #4a3d2f;
+  --c-muted: #6b5a47;
+  --c-terracotta: #a5432a; /* aksen */
+  --c-on-accent: #fff8ee; /* teks di atas aksen */
+  --c-moss: #2f7d4f; /* hijau untuk "terjawab" */
+  --c-shadow: #2a221a; /* bayangan keras ala cap */
+
+  /* Blok yang tetap GELAP di kedua tema (kotak review, thumbnail video).
+     Bukan --c-ink, karena di tema gelap ink dibalik jadi terang. */
+  --c-slab: #2a221a;
+  --c-on-slab: #f3ebdb;
+  --c-blush: #e3a58f; /* aksen terang di atas slab */
+  --c-sand: #c9b896; /* teks redup di atas slab */
+
+  /* Permukaan netral untuk placeholder (sampul tanpa gambar, dropzone) */
+  --c-tan-1: #e3d5bb;
+  --c-tan-2: #d9c6a4;
+  --c-tan-3: #cfb995;
+  --c-tan-4: #e8dcc4;
+  --c-tan-5: #efe4cd;
+
+  --c-rule: rgb(120 90 55 / 0.09); /* garis kertas bergaris */
+  --c-margin: rgb(165 67 42 / 0.35); /* garis margin merah */
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --c-cream: #171310;
+  --c-paper: #211b16;
+  --c-field: #2a231c;
+  --c-ink: #ece2d0;
+  --c-ink-soft: #cfc2ab;
+  --c-muted: #a39178;
+  --c-terracotta: #d4694b;
+  --c-on-accent: #1a120e;
+  --c-moss: #66c08c;
+  --c-shadow: #3d3227;
+
+  --c-slab: #2c241c;
+  --c-on-slab: #f0e6d4;
+
+  --c-tan-1: #2b231b;
+  --c-tan-2: #30271e;
+  --c-tan-3: #352b21;
+  --c-tan-4: #281f18;
+  --c-tan-5: #261e17;
+
+  --c-rule: rgb(236 226 208 / 0.055);
+  --c-margin: rgb(212 105 75 / 0.32);
+}
+
+/* Di sini kita menamai warna, font, dan bayangan sendiri.
    Efeknya: nama di bawah bisa dipakai sebagai class di className.
    Contoh: --color-terracotta -> className="text-terracotta" atau "bg-terracotta"
-           --font-display     -> className="font-display" */
+           --font-display     -> className="font-display"
+           --shadow-stamp     -> className="shadow-stamp" */
 @theme inline {
-  --color-cream: #f3ebdb;
-  --color-paper: #f9f3e6;
-  --color-ink: #2a221a;
-  --color-ink-soft: #4a3d2f;
-  --color-muted: #6b5a47;
-  --color-terracotta: #a5432a;
+  --color-cream: var(--c-cream);
+  --color-paper: var(--c-paper);
+  --color-field: var(--c-field);
+  --color-ink: var(--c-ink);
+  --color-ink-soft: var(--c-ink-soft);
+  --color-muted: var(--c-muted);
+  --color-terracotta: var(--c-terracotta);
+  --color-on-accent: var(--c-on-accent);
+  --color-moss: var(--c-moss);
+  --color-slab: var(--c-slab);
+  --color-on-slab: var(--c-on-slab);
+  --color-blush: var(--c-blush);
+  --color-sand: var(--c-sand);
+  --color-tan-1: var(--c-tan-1);
+  --color-tan-2: var(--c-tan-2);
+  --color-tan-3: var(--c-tan-3);
+  --color-tan-4: var(--c-tan-4);
+  --color-tan-5: var(--c-tan-5);
+
+  --shadow-stamp: 8px 8px 0 var(--c-shadow);
 
   /* var(--font-instrument) dst. dibuat oleh next/font di layout.tsx */
   --font-display: var(--font-instrument);
   --font-serif: var(--font-newsreader);
   --font-sans: var(--font-dm-sans);
   --font-mono: var(--font-jetbrains);
+}
+
+::selection {
+  background: var(--c-terracotta);
+  color: var(--c-on-accent);
+}
+
+/* Garis kertas bergaris di seluruh latar */
+body {
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 39px,
+    var(--c-rule) 39px 40px
+  );
+}
+
+/* Garis margin merah di kiri, hanya di layar lebar */
+@media (min-width: 48rem) {
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 96px;
+    width: 1px;
+    background: var(--c-margin);
+    pointer-events: none;
+  }
+}
+
+/* Peralihan warna yang halus saat tema ditukar. Kelas ini dipasang sebentar oleh
+   ThemeToggle saja (bukan permanen), supaya tidak mengganggu animasi lain. */
+.theme-anim,
+.theme-anim *,
+.theme-anim *::before,
+.theme-anim *::after {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease,
+    fill 0.35s ease,
+    stroke 0.35s ease,
+    box-shadow 0.35s ease !important;
+}
+
+/* Jeda animasi bertingkat (dipakai bersama .fade-up, .pop, .grow-x) */
+.delay-1 { --delay: 90ms; }
+.delay-2 { --delay: 200ms; }
+.delay-3 { --delay: 340ms; }
+
+/* ---------- Animasi ----------
+   Semuanya HANYA aktif kalau pengguna tidak meminta gerakan dikurangi di sistemnya
+   (prefers-reduced-motion). Kalau diminta, halaman tampil diam seperti biasa.
+   Animasi memakai properti opacity/translate/scale, jadi ringan dan tidak mengubah tata letak. */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes fade-in { from { opacity: 0; } }
+  @keyframes fade-up { from { opacity: 0; translate: 0 18px; } }
+  @keyframes pop { 0% { opacity: 0; scale: 0.3; } 65% { scale: 1.12; } }
+  @keyframes grow-x { from { scale: 0 1; } }
+  @keyframes reveal { from { opacity: 0; translate: 0 36px; } }
+
+  /* Isi halaman memudar masuk setiap pindah halaman (app/template.tsx) */
+  .page-enter { animation: fade-in 0.4s ease-out both; }
+
+  /* Muncul dari bawah, sambil memudar. Atur jeda lewat .delay-1/2/3 */
+  .fade-up {
+    animation: fade-up 0.75s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Cap tinta "mendarat" (kalender, titik minggu ini) */
+  .pop {
+    animation: pop 0.5s cubic-bezier(0.2, 0.9, 0.3, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Batang progres tumbuh dari kiri */
+  .grow-x {
+    transform-origin: left;
+    animation: grow-x 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  /* Muncul saat di-scroll ke layar, tanpa JavaScript (scroll-driven animation).
+     Browser yang belum mendukung tidak menganimasikannya sama sekali: elemen langsung terlihat. */
+  @supports (animation-timeline: view()) {
+    .reveal {
+      animation: reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+
+  /* Kartu terangkat sedikit saat disorot */
+  .lift {
+    transition:
+      translate 0.25s cubic-bezier(0.2, 0.7, 0.2, 1),
+      box-shadow 0.25s ease;
+  }
+  .lift:hover { translate: 0 -5px; }
+
+  /* Semua tombol: sedikit mengecil saat ditekan, warna berganti halus */
+  button {
+    transition:
+      scale 0.15s ease,
+      background-color 0.2s ease,
+      color 0.2s ease,
+      border-color 0.2s ease,
+      opacity 0.2s ease;
+  }
+  button:not(:disabled):active { scale: 0.96; }
+
+  /* Garis bawah yang "menyapu" dari kiri saat tautan disorot */
+  .link-u {
+    background: linear-gradient(currentColor, currentColor) left bottom / 0 2px no-repeat;
+    transition: background-size 0.28s ease;
+  }
+  .link-u:hover { background-size: 100% 2px; }
 }
